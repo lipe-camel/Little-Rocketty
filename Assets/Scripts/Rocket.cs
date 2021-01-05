@@ -25,11 +25,11 @@ public class Rocket : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.A))
         {
-            Debug.Log("A pressed");
+            transform.Rotate(Vector3.forward);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            Debug.Log("D pressed");
+            transform.Rotate(-Vector3.forward);
         }
     }
 
