@@ -22,6 +22,22 @@ public class Rocket : MonoBehaviour
         Rotate();
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                Debug.Log("OK"); //TODO remover
+                break;
+            case "Fuel":
+                Debug.Log("fuel"); //TODO remover
+                break;
+            default:
+                Debug.Log("Dead"); //TODO matar jogador
+                break;
+        }
+    }
+
     private void Thrust()
     {
         float thrustSpeed = (thrustForce * 10) * Time.deltaTime;
