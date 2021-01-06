@@ -7,6 +7,8 @@ public class Rocket : MonoBehaviour
 {
     Rigidbody rigidBody;
     AudioSource audioSource;
+    [SerializeField] float rotationForce = 100f;
+    [SerializeField] float thrustForce = 100f;
 
     void Start()
     {
@@ -22,9 +24,11 @@ public class Rocket : MonoBehaviour
 
     private void Thrust()
     {
+        float thrustSpeed = (thrustForce * 10) * Time.deltaTime;
+
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidBody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up * thrustSpeed);
             if (!audioSource.isPlaying)
             {
                 audioSource.Play();
@@ -38,14 +42,16 @@ public class Rocket : MonoBehaviour
 
     private void Rotate()
     {
+        float rotationSpeed = rotationForce * Time.deltaTime;
+
         rigidBody.freezeRotation = true;
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.forward);
+            transform.Rotate(Vector3.forward * rotationSpeed);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(-Vector3.forward);
+            transform.Rotate(-Vector3.forward * rotationSpeed);
         }
         rigidBody.freezeRotation = false;
     }
