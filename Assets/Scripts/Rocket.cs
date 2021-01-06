@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-    new Rigidbody rigidbody;
+    Rigidbody rigidBody;
+    AudioSource audioSource;
 
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -21,8 +23,17 @@ public class Rocket : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidbody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up);
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
         }
+        else
+        {
+            audioSource.Stop();
+        }
+
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward);
