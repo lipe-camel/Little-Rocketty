@@ -420,6 +420,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationForce: 150
   thrustForce: 100
+  mainEngine: {fileID: 8300000, guid: bf2151f535ce68745b2a52db3dbf6924, type: 3}
+  deathSound: {fileID: 8300000, guid: e286bb9c5c998ec4e9b2ab2b478dba5d, type: 3}
+  victorySound: {fileID: 8300000, guid: 7cf3499d15b876d4281f6add526a594e, type: 3}
+  timeUntilLoad: 1
 --- !u!1 &2830377866663120544
 GameObject:
   m_ObjectHideFlags: 0
