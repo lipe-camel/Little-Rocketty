@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.ParticleSystemJobs;
 
+[DisallowMultipleComponent]
 public class Rocket : MonoBehaviour
 {
     Rigidbody rigidBody;
