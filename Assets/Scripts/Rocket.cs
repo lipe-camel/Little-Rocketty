@@ -38,6 +38,22 @@ public class Rocket : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            rigidBody.useGravity = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            rigidBody.useGravity = true;
+        }
+    }
+
     private void Thrust()
     {
         float thrustSpeed = (thrustForce * 10) * Time.deltaTime;
@@ -71,5 +87,7 @@ public class Rocket : MonoBehaviour
         }
         rigidBody.freezeRotation = false;
     }
+
+
 
 }
