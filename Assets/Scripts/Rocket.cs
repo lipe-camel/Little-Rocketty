@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.ParticleSystemJobs;
 
 public class Rocket : MonoBehaviour
 {
@@ -7,9 +8,16 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] float rotationForce = 100f;
     [SerializeField] float thrustForce = 100f;
-    [SerializeField] AudioClip mainEngine;
+
+    [SerializeField] AudioClip mainEngineSound;
     [SerializeField] AudioClip deathSound;
     [SerializeField] AudioClip victorySound;
+    //[SerializeField] AudioClip toggleGravity;
+
+    [SerializeField] ParticleSystem mainEngineParticle;
+    [SerializeField] ParticleSystem deathParticle;
+    [SerializeField] ParticleSystem victoryParticle;
+
     [SerializeField] float timeUntilLoad = 1f;
 
     enum State { Alive, Dying, Transcending}
@@ -38,6 +46,7 @@ public class Rocket : MonoBehaviour
         else
         {
             audioSource.Stop();
+            mainEngineParticle.Stop();
         }
     }
 
@@ -48,7 +57,11 @@ public class Rocket : MonoBehaviour
         rigidBody.AddRelativeForce(Vector3.up * thrustSpeed);
         if (!audioSource.isPlaying)
         {
-            audioSource.PlayOneShot(mainEngine);
+            audioSource.PlayOneShot(mainEngineSound);
+        }
+        if (!mainEngineParticle.isPlaying)
+        {
+            mainEngineParticle.Play();
         }
     }
 
@@ -88,17 +101,25 @@ public class Rocket : MonoBehaviour
     private void StartSucessSequence()
     {
         state = State.Transcending;
-        audioSource.Stop();
+        StopMainEngine();
         audioSource.PlayOneShot(victorySound);
+        victoryParticle.Play();
         Invoke("LoadNextScene", timeUntilLoad);
     }
 
     private void StartDeathSequence()
     {
         state = State.Dying;
-        audioSource.Stop();
-        audioSource.PlayOneShot(deathSound);
+        StopMainEngine();
+        audioSource.PlayOneShot(deathSound, 3f);
+        deathParticle.Play();
         Invoke("RestartScene", timeUntilLoad);
+    }
+
+    private void StopMainEngine()
+    {
+        audioSource.Stop();
+        mainEngineParticle.Stop();
     }
 
     private void RestartScene()
@@ -115,6 +136,7 @@ public class Rocket : MonoBehaviour
     {
         if (collision.gameObject.tag == "Zero Gravity")
         {
+            //audioSource.PlayOneShot(toggleGravity);
             rigidBody.useGravity = false;
         }
     }
@@ -123,6 +145,7 @@ public class Rocket : MonoBehaviour
     {
         if (collision.gameObject.tag == "Zero Gravity")
         {
+            //audioSource.PlayOneShot(toggleGravity);
             rigidBody.useGravity = true;
         }
     }
