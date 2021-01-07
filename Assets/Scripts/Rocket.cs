@@ -6,8 +6,15 @@ public class Rocket : MonoBehaviour
 {
     Rigidbody rigidBody;
     AudioSource audioSource;
+
     [SerializeField] float rotationForce = 100f;
     [SerializeField] float thrustForce = 100f;
+
+    [SerializeField] float waterMass = 0.2f;
+    [SerializeField] float waterDrag = 20f;
+    [SerializeField] float atmosphereMass = 1f;
+    [SerializeField] float atmosphereDrag = 0.4f;
+
     [SerializeField] float loadLevelDelay = 1f;
 
     [SerializeField] AudioClip mainEngineSound;
@@ -21,6 +28,9 @@ public class Rocket : MonoBehaviour
 
     enum State { Alive, Dying, Transcending}
     State state = State.Alive;
+
+    enum SurroundedBy {  Atmosphere, ZeroGravity, Water, Jelly}
+    SurroundedBy surroundedBy = SurroundedBy.Atmosphere;
 
     void Start()
     {
@@ -36,6 +46,8 @@ public class Rocket : MonoBehaviour
             RespondToRotateInput();
         }
     }
+
+    //Manage Inputs
     private void RespondToThrustInput()
     {
         if (Input.GetKey(KeyCode.Space))
@@ -80,6 +92,7 @@ public class Rocket : MonoBehaviour
         rigidBody.freezeRotation = false; //resume physics control of rotation
     }
 
+
     void OnCollisionEnter(Collision collision)
     {
         if(state != State.Alive) { return; } //ignore collision information when dead
@@ -97,6 +110,60 @@ public class Rocket : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            EnableZeroGravity();
+        }
+
+        if (collision.gameObject.tag == "Water")
+        {
+            EnableWaterPhysics();
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            DisableZeroGravity();
+        }
+        if (collision.gameObject.tag == "Water")
+        {
+            DisableWaterPhysics();
+        }
+    }
+
+    //Alternate Physics
+    private void EnableZeroGravity()
+    {
+        surroundedBy = SurroundedBy.ZeroGravity;
+        rigidBody.useGravity = false;
+    }
+
+    private void DisableZeroGravity()
+    {
+        surroundedBy = SurroundedBy.Atmosphere;
+        rigidBody.useGravity = true;
+    }
+
+    private void EnableWaterPhysics()
+    {
+        surroundedBy = SurroundedBy.Water;
+
+        rigidBody.mass = waterMass;
+        rigidBody.drag = waterDrag;
+    }
+
+    private void DisableWaterPhysics()
+    {
+        surroundedBy = SurroundedBy.Atmosphere;
+        rigidBody.mass = atmosphereMass;
+        rigidBody.drag = atmosphereDrag;
+    }
+
+    //Scene Management
     private void StartSucessSequence()
     {
         state = State.Transcending;
@@ -129,24 +196,6 @@ public class Rocket : MonoBehaviour
     private void LoadNextScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.tag == "Zero Gravity")
-        {
-            //audioSource.PlayOneShot(toggleGravity);
-            rigidBody.useGravity = false;
-        }
-    }
-
-    private void OnTriggerExit(Collider collision)
-    {
-        if (collision.gameObject.tag == "Zero Gravity")
-        {
-            //audioSource.PlayOneShot(toggleGravity);
-            rigidBody.useGravity = true;
-        }
     }
 
 }

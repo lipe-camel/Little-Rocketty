@@ -423,6 +423,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationForce: 150
   thrustForce: 100
+  waterDrag: 14
+  waterMass: 0.2
+  atmosphereDrag: 0.4
+  atmosphereMass: 1
   loadLevelDelay: 1
   mainEngineSound: {fileID: 8300000, guid: bf2151f535ce68745b2a52db3dbf6924, type: 3}
   deathSound: {fileID: 8300000, guid: e286bb9c5c998ec4e9b2ab2b478dba5d, type: 3}
