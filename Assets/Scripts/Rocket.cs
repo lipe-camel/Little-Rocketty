@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
 {
@@ -9,6 +7,9 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] float rotationForce = 100f;
     [SerializeField] float thrustForce = 100f;
+
+    enum State { Alive, Dying, Transcending}
+    State state = State.Alive;
 
     void Start()
     {
@@ -18,42 +19,16 @@ public class Rocket : MonoBehaviour
 
     void Update()
     {
-        Thrust();
-        Rotate();
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        switch (collision.gameObject.tag)
+        if (state == State.Alive)
         {
-            case "Friendly":
-                Debug.Log("OK"); //TODO remover
-                break;
-            case "Fuel":
-                Debug.Log("fuel"); //TODO remover
-                break;
-            default:
-                Debug.Log("Dead"); //TODO matar jogador
-                break;
+            Thrust();
+            Rotate();
+        }
+        else //refactor
+        {
+            audioSource.Stop();
         }
     }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.tag == "Zero Gravity")
-        {
-            rigidBody.useGravity = false;
-        }
-    }
-
-    private void OnTriggerExit(Collider collision)
-    {
-        if (collision.gameObject.tag == "Zero Gravity")
-        {
-            rigidBody.useGravity = true;
-        }
-    }
-
     private void Thrust()
     {
         float thrustSpeed = (thrustForce * 10) * Time.deltaTime;
@@ -88,6 +63,49 @@ public class Rocket : MonoBehaviour
         rigidBody.freezeRotation = false;
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if(state != State.Alive) { return; } //ignore collisions when dead
 
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                break;
+            case "Finish":
+                state = State.Transcending;
+                Invoke("LoadNextScene", 1f);
+                break;
+            default:
+                state = State.Dying;
+                Invoke("RestartScene", 1f);
+                break;
+        }
+    }
+
+    private void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void LoadNextScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            rigidBody.useGravity = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.tag == "Zero Gravity")
+        {
+            rigidBody.useGravity = true;
+        }
+    }
 
 }
