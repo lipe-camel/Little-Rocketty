@@ -422,7 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a1c3281eed63b64c8a15b34fe095e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationForce: 150
+  rotationForce: 160
   thrustForce: 100
   loadLevelDelay: 1
   mainEngineSound: {fileID: 8300000, guid: bf2151f535ce68745b2a52db3dbf6924, type: 3}
@@ -443,12 +443,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344bdffb405997840aacee3891532e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterMass: 0.3
-  waterDrag: 6
   atmosphereMass: 1
   atmosphereDrag: 0.4
+  atmosphereGravity: 1
+  waterMass: 0.3
+  waterDrag: 6
+  waterGravity: 1
   jellyMass: 0.11
   jellyDrag: 20
+  jellyGravity: 0
+  zeroGravityMass: 1
+  zeroGravityDrag: 0.4
+  zeroGravity: 0
 --- !u!1 &2830377866663120544
 GameObject:
   m_ObjectHideFlags: 0
