@@ -23,6 +23,8 @@ public class Rocket : MonoBehaviour
     enum State { Alive, Dying, Transcending}
     State state = State.Alive;
 
+    bool collisionsDisabled = false;
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
@@ -36,7 +38,12 @@ public class Rocket : MonoBehaviour
             RespondToThrustInput();
             RespondToRotateInput();
         }
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugKeys();
+        }
     }
+
 
     //Manage Inputs
     private void RespondToThrustInput()
@@ -72,22 +79,34 @@ public class Rocket : MonoBehaviour
         float rotationSpeed = rotationForce * Time.deltaTime;
 
         rigidBody.freezeRotation = true; //take manual control of rotation
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Rotate(Vector3.forward * rotationSpeed);
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             transform.Rotate(-Vector3.forward * rotationSpeed);
         }
         rigidBody.freezeRotation = false; //resume physics control of rotation
     }
 
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            StartSucessSequence();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsDisabled = !collisionsDisabled;
+        }
+    }
+
 
     //Scene Management
     void OnCollisionEnter(Collision collision)
     {
-        if(state != State.Alive) { return; } //ignore collision information when dead
+        if(state != State.Alive || collisionsDisabled) { return; } //ignore collision information when dead
 
         switch (collision.gameObject.tag)
         {
