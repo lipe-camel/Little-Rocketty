@@ -1,33 +1,35 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public class Rocket : MonoBehaviour
 {
-    Rigidbody rigidBody;
-    AudioSource audioSource;
-
+    //config params
+    [Header("Rocket Controls")]
     [SerializeField] float rotationForce = 100f;
     [SerializeField] float thrustForce = 100f;
-
-    [SerializeField] float loadLevelDelay = 1f;
-
+    [Header("Sounds")]
     [SerializeField] AudioClip mainEngineSound;
     [SerializeField] AudioClip deathSound;
     [SerializeField] AudioClip victorySound;
-
+    [Header("Particles")]
     [SerializeField] ParticleSystem mainEngineParticle;
     [SerializeField] ParticleSystem deathParticle;
     [SerializeField] ParticleSystem victoryParticle;
 
+    //state
     bool isTransitioning = false;
-
     bool collisionsDisabled = false;
+
+    //cached references
+    Rigidbody rigidBody;
+    AudioSource audioSource;
+    SceneLoader sceneLoader;
 
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+        sceneLoader = FindObjectOfType<SceneLoader>();
     }
 
     void Update()
@@ -126,7 +128,7 @@ public class Rocket : MonoBehaviour
         StopMainEngine();
         audioSource.PlayOneShot(victorySound);
         victoryParticle.Play();
-        Invoke("LoadNextScene", loadLevelDelay);
+        sceneLoader.LoadNextSceneWithDelay();
     }
 
     private void StartDeathSequence()
@@ -135,7 +137,7 @@ public class Rocket : MonoBehaviour
         StopMainEngine();
         audioSource.PlayOneShot(deathSound, 3f);
         deathParticle.Play();
-        Invoke("RestartScene", loadLevelDelay);
+        sceneLoader.RestartSceneWithDelay();
     }
 
     private void StopMainEngine()
@@ -144,14 +146,5 @@ public class Rocket : MonoBehaviour
         mainEngineParticle.Stop();
     }
 
-    private void RestartScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    private void LoadNextScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
 
 }
