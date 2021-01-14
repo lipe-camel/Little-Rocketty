@@ -39,10 +39,6 @@ public class Rocket : MonoBehaviour
             RespondToThrustInput();
             RespondToRotateInput();
         }
-        if (Debug.isDebugBuild)
-        {
-            RespondToDebugKeys();
-        }
     }
 
 
@@ -90,16 +86,10 @@ public class Rocket : MonoBehaviour
         }
     }
 
-    private void RespondToDebugKeys()
+
+    public void Disablecollisions() //for debugging purposes
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            StartSucessSequence();
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            collisionsDisabled = !collisionsDisabled;
-        }
+        collisionsDisabled = !collisionsDisabled;
     }
 
 
@@ -122,7 +112,7 @@ public class Rocket : MonoBehaviour
         }
     }
 
-    private void StartSucessSequence()
+    public void StartSucessSequence()
     {
         isTransitioning = true;
         StopMainEngine();
@@ -145,6 +135,4 @@ public class Rocket : MonoBehaviour
         audioSource.Stop();
         mainEngineParticle.Stop();
     }
-
-
 }
